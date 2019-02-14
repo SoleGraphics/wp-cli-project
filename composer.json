@@ -1,0 +1,28 @@
+{
+    "name": "sole-graphics/wp-cli-project",
+    "description": "Manage WordPress core and plugin versions in a config file to keep them out of your project repository.",
+    "type": "wp-cli-package",
+    "homepage": "https://github.com/CurtisL/wp-cli-project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Curtis Lawrence",
+            "email": "curtis@solegraphics.com",
+            "homepage": "https://github.com/CurtisL"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "": "src/"
+        },
+        "files": [ "project-command.php" ]
+    },
+    "require": {
+        "wp-cli/wp-cli": "^2.1.0"
+    },
+    "require-dev": {
+        "behat/behat": "~2.5"
+    }
+}
