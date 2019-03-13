@@ -166,6 +166,18 @@ class Config {
 		fclose( $fp );
 
 		$this->config = $config_save;
+
+		/** Keep active theme in repo */
+		$theme_base = explode( '/', $this->config['theme'] );
+		$this->gitignore->add( '!/wp-content/themes/' . $theme_base[0], 'themes' );
+
+		/** Keep parent theme in the repo too */
+		$theme_data = wp_get_theme();
+		if ( $theme_data->get( 'Template' ) ) {
+			$parent_theme_base = explode( '/', $theme_data->get( 'Template' ) );
+			$this->gitignore->add( '!/wp-content/themes/' . $parent_theme_base[0], 'themes' );
+		}
+
 		$this->gitignore->save();
 
 		WP_CLI::success( 'Project Saved!' );
