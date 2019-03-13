@@ -12,19 +12,9 @@ Updates your `.gitignore` to keep custom plugins in the repo.
 
 ## Installing `project` the command
 
-**Local installation:**
+`wp package install git@github.com:CurtisL/wp-cli-project.git`
 
-First, clone this repo anywhere on your system.
-
-Install the package to wp-cli `wp package install path/to/cloned/wp-cli-project`
-
-or `wp package install ./` if you're in the `wp-cli-project` directory
-
-`wp package list` to verify `sole-graphics/wp-cli-project` is installed.
-
-**WP CLI Package installation:**
-
-TODO: this package isn't currently published to be installed directly through the `wp package install` command, please use the local installation method for now.
+Once installed the `wp project` commands will be avilable.
 
 ## Starting a new project
 
