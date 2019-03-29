@@ -354,7 +354,7 @@ class Config {
 			$plugin_info = new Plugin_Info( $slug, $plugin['Version'] );
 
 			// Store basic plugin info.
-			$plugins_config[] = array(
+			$plugins_config[ $slug ] = array(
 				'slug'    => $slug,
 				'version' => $plugin['Version'],
 				'active'  => is_plugin_active( $plugin_path ),
