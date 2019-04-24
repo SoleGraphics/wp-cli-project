@@ -79,7 +79,7 @@ class Command extends WP_CLI {
 			$this->install_core();
 		}
 
-		WP_CLI::runcommand( 'project install_plugins' );
+		WP_CLI::runcommand( 'project install_plugins --skip-plugins' );
 
 		// Dispatch scheduled save if needed.
 		if ( self::$schedule_save ) {
@@ -96,7 +96,8 @@ class Command extends WP_CLI {
 	 * @when after_wp_load
 	 */
 	public function install_plugins() {
-		$install_plugin = 'wp plugin install %s --version=%s --activate=%s';
+		$install_plugin = 'wp plugin install %s --version=%s --skip-plugins';
+
 		foreach ( $this->config->plugins as $plugin ) {
 			if ( ! $plugin['custom'] ) {
 				$plugin_info = new Plugin_Info( $plugin['slug'], $plugin['version'] );
@@ -104,9 +105,6 @@ class Command extends WP_CLI {
 				if ( $plugin_info->is_version_available() ) {
 					WP_CLI::log( 'Installing Plugin ' . $plugin['slug'] . ' ' . $plugin['version'] );
 					WP_CLI::launch( WP_CLI\Utils\esc_cmd( $install_plugin, $plugin['slug'], $plugin['version'], $plugin['active'] ), false );
-				} elseif ( $this->config->gitignore->in_ignore( '!/wp-content/plugins/' . $plugin['slug'] ) ) {
-					WP_CLI::log( 'Activating Plugin ' . $plugin['slug'] . ' ' . $plugin['version'] );
-					WP_CLI::launch( 'wp plugin activate ' . $plugin['slug'] );
 				} else {
 					$recommended_version = $plugin_info->get_recommended_verson();
 
@@ -122,7 +120,7 @@ class Command extends WP_CLI {
 					switch ( $choice ) {
 						case 'update':
 							WP_CLI::log( 'Installing ' . $plugin['slug'] . ' ' . $recommended_version );
-							WP_CLI::launch( WP_CLI\Utils\esc_cmd( $install_plugin . ' --force', $plugin['slug'], $recommended_version, $plugin['active'] ), false );
+							WP_CLI::launch( WP_CLI\Utils\esc_cmd( $install_plugin . ' --force', $plugin['slug'], $recommended_version ), false );
 							self::$schedule_save = true;
 							break;
 
@@ -131,6 +129,13 @@ class Command extends WP_CLI {
 							break;
 					}
 				}
+			}
+		}
+
+		foreach ( $this->config->plugins as $plugin ) {
+			if ( $plugin['active'] ) {
+				WP_CLI::log( 'Activating Plugin ' . $plugin['slug'] . ' ' . $plugin['version'] );
+				WP_CLI::launch( 'wp plugin activate ' . $plugin['slug'] . ' --skip-plugins' );
 			}
 		}
 
@@ -295,7 +300,7 @@ class Command extends WP_CLI {
 	 * @return void
 	 */
 	private function check_core() {
-		$update_core = 'wp core update --version=%s';
+		$update_core = 'wp core update --version=%s --skip-plugins';
 
 		// Verify WordPress version installed.
 		switch ( version_compare( $this->installed_version, $this->config->wp_version ) ) {
