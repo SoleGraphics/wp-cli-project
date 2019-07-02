@@ -12,7 +12,7 @@ Updates your `.gitignore` to keep custom plugins in the repo.
 
 ## Installing `project` the command
 
-`wp package install git@github.com:CurtisL/wp-cli-project.git`
+`wp package install git@github.com:SoleGraphics/wp-cli-project.git`
 
 Once installed the `wp project` commands will be avilable.
 
