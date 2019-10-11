@@ -280,7 +280,7 @@ class Command extends WP_CLI {
 
 			WP_CLI::success( 'Starting WordPress install process...' );
 
-			$core_install = 'wp core install --url=%s --title=%s --admin_user=%s --admin_email=%s --admin_password=%s';
+			$core_install = 'core install --url=%s --title=%s --admin_user=%s --admin_email=%s --admin_password=%s';
 
 			$url      = \cli\prompt( 'Site Url' );
 			$title    = \cli\prompt( 'Site Title' );
@@ -288,7 +288,10 @@ class Command extends WP_CLI {
 			$email    = \cli\prompt( 'Admin Email' );
 			$password = \cli\prompt( 'Admin Password' );
 
-			WP_CLI::launch( WP_CLI\Utils\esc_cmd( $core_install, $url, $title, $user, $email, $password ), false, true );
+			WP_CLI::runcommand(
+				WP_CLI\Utils\esc_cmd( $core_install, $url, $title, $user, $email, $password ),
+				['exit_error' => false]
+			);
 		} else {
 			WP_CLI::success( 'WordPress appears to already be installed!' );
 		}
