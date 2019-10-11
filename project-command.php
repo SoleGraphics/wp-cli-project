@@ -3,7 +3,10 @@ if ( ! class_exists( 'WP_CLI' ) ) {
 	return;
 }
 
-require_once __DIR__ . '/vendor/autoload.php';
+$autoloader = __DIR__ . '/vendor/autoload.php';
+if ( file_exists( $autoloader ) ) {
+	require_once $autoloader;
+}
 
 spl_autoload_register(
 	function( $class ) {
