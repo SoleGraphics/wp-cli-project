@@ -153,13 +153,9 @@ class Config {
 			WP_CLI::log( WP_CLI::colorize( 'Creating %c' . $this->project_file . '%n' ) );
 		}
 
-		$config_save = $this->config;
-
-		if ( ! $this->default ) {
-			$this->get_live_config();
-			$this->resolve_plugin_versions();
-			$config_save = $this->live_config;
-		}
+		$this->get_live_config();
+		$this->resolve_plugin_versions();
+		$config_save = $this->live_config;
 
 		$fp = fopen( $this->project_file, 'w' );
 		fwrite( $fp, json_encode( $config_save, JSON_PRETTY_PRINT ) );
