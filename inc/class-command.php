@@ -96,7 +96,7 @@ class Command extends WP_CLI {
 	 * @when after_wp_load
 	 */
 	public function install_plugins() {
-		$install_plugin = 'wp plugin install %s --version=%s --skip-plugins';
+		$install_plugin = 'wp plugin install %s --version=%s --skip-plugins --force';
 
 		foreach ( $this->config->plugins as $plugin ) {
 			if ( ! $plugin['custom'] ) {
