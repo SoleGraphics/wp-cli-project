@@ -24,7 +24,7 @@ spl_autoload_register(
 		$last = 'class-' . $last . '.php';
 
 		$parts[] = $last;
-		$file    = dirname( __FILE__ ) . '/inc/' . str_replace( '_', '-', strtolower( implode( $parts, '/' ) ) );
+		$file    = dirname( __FILE__ ) . '/inc/' . str_replace( '_', '-', strtolower( implode( '/', $parts ) ) );
 
 		if ( file_exists( $file ) ) {
 			require $file;
