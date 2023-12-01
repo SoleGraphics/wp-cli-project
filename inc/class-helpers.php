@@ -33,7 +33,14 @@ class Helpers {
 	 * @return boolean
 	 */
 	public static function core_is_installed() {
-		$response = WP_CLI::launch( 'wp core is-installed', false, true );
+		$response = WP_CLI::launch_self(
+			'core is-installed',
+			[],
+			[],
+			false,
+			true
+		);
+
 		return 0 === $response->return_code;
 	}
 

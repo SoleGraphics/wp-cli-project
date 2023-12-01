@@ -96,7 +96,7 @@ class Command extends WP_CLI {
 	 * @when after_wp_load
 	 */
 	public function install_plugins() {
-		$install_plugin = 'wp plugin install %s --version=%s --skip-plugins --force';
+		$install_plugin = 'plugin install %s --version=%s --skip-plugins --force';
 
 		foreach ( $this->config->plugins as $plugin ) {
 			if ( ! $plugin['custom'] ) {
@@ -104,7 +104,8 @@ class Command extends WP_CLI {
 
 				if ( $plugin_info->is_version_available() ) {
 					WP_CLI::log( 'Installing Plugin ' . $plugin['slug'] . ' ' . $plugin['version'] );
-					WP_CLI::launch( WP_CLI\Utils\esc_cmd( $install_plugin, $plugin['slug'], $plugin['version'], $plugin['active'] ), false );
+					// WP_CLI::launch( WP_CLI\Utils\esc_cmd( $install_plugin, $plugin['slug'], $plugin['version'], $plugin['active'] ), false );
+					WP_CLI::runcommand( WP_CLI\Utils\esc_cmd( $install_plugin, $plugin['slug'], $plugin['version'], $plugin['active'] ) );
 				} else {
 					$recommended_version = $plugin_info->get_recommended_verson();
 
@@ -120,7 +121,8 @@ class Command extends WP_CLI {
 					switch ( $choice ) {
 						case 'update':
 							WP_CLI::log( 'Installing ' . $plugin['slug'] . ' ' . $recommended_version );
-							WP_CLI::launch( WP_CLI\Utils\esc_cmd( $install_plugin . ' --force', $plugin['slug'], $recommended_version ), false );
+							WP_CLI::runcommand( WP_CLI\Utils\esc_cmd( $install_plugin . ' --force', $plugin['slug'], $recommended_version ) );
+							// WP_CLI::launch( WP_CLI\Utils\esc_cmd( $install_plugin . ' --force', $plugin['slug'], $recommended_version ), false );
 							self::$schedule_save = true;
 							break;
 
@@ -224,7 +226,8 @@ class Command extends WP_CLI {
 		}
 
 		Helpers::inform( '%GDownloading WordPress ' . $this->config->wp_version . '%n' );
-		$download = WP_CLI::launch( WP_CLI\Utils\esc_cmd( 'wp core download --version=%s --path=%s --skip-content', $this->config->wp_version, Helpers::get_project_root() ), false, true );
+		$command = WP_CLI\Utils\esc_cmd( 'core download --version=%s --path=%s --skip-content', $this->config->wp_version, Helpers::get_project_root() );
+		WP_CLI::runcommand( $command );
 
 		$this->installed_version  = $this->config->installed_version;
 		$this->config->wp_version = $this->installed_version;
@@ -240,15 +243,16 @@ class Command extends WP_CLI {
 		// Not configured... so let's configure it.
 		if ( ! file_exists( ABSPATH . '/wp-config.php' ) ) {
 			WP_CLI::warning( 'wp-config.php needs to be created.' );
-			$create_config = 'wp config create --dbname=%s --dbuser=%s --dbpass=%s --dbhost=%s --dbprefix=%s --skip-check';
+			$create_config = 'config create --dbname=%s --dbuser=%s --dbpass=%s --dbhost=%s --dbprefix=%s --skip-check';
 
 			$db_name   = \cli\prompt( 'DB_NAME' );
 			$db_user   = \cli\prompt( 'DB_USER' );
 			$db_pass   = \cli\prompt( 'DB_PASS' );
 			$db_prefix = \cli\prompt( 'DB_PREFIX', 'wp_' );
 			$db_host   = \cli\prompt( 'DB_HOST', 'localhost' );
-
-			WP_CLI::launch( WP_CLI\Utils\esc_cmd( $create_config, $db_name, $db_user, $db_pass, $db_host, $db_prefix ), false, true );
+			$command = WP_CLI\Utils\esc_cmd( $create_config, $db_name, $db_user, $db_pass, $db_host, $db_prefix );
+			WP_CLI::runcommand($command);
+			// WP_CLI::launch( WP_CLI\Utils\esc_cmd( $create_config, $db_name, $db_user, $db_pass, $db_host, $db_prefix ), false, true );
 		}
 
 		if ( ! Helpers::core_is_installed() ) {
@@ -303,15 +307,16 @@ class Command extends WP_CLI {
 	 * @return void
 	 */
 	private function check_core() {
-		$update_core = 'wp core update --version=%s --skip-plugins';
+		$update_core = 'core update --version=%s --skip-plugins';
 
 		// Verify WordPress version installed.
 		switch ( version_compare( $this->installed_version, $this->config->wp_version ) ) {
 			case '-1':
 				// Behind config.
 				Helpers::inform( '%GUpdating to WordPress v' . $this->config->wp_version . '%n to match project settings.' );
-				WP_CLI::launch( WP_CLI\Utils\esc_cmd( $update_core, $this->config->wp_version ) );
-				WP_CLI::success( '%GUpdated to WordPress v' . $this->config->wp_version . '%n!' );
+				$command = WP_CLI\Utils\esc_cmd( $update_core, $this->config->wp_version );
+				WP_CLI::runcommand( $command );
+				WP_CLI::success( WP_CLI::colorize('%GUpdated to WordPress v' . $this->config->wp_version . '%n!') );
 				break;
 			case '0':
 				WP_CLI::success( WP_CLI::colorize( '%GWordPress v' . $this->config->wp_version . '%n already installed.' ) );
