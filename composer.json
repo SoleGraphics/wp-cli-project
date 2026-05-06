@@ -17,12 +17,13 @@
         "psr-4": {
             "": "src/"
         },
-        "files": [ "project-command.php" ]
+        "files": [
+            "project-command.php"
+        ]
     },
-    "require": {
-    },
+    "require": {},
     "require-dev": {
         "behat/behat": "~2.5",
-        "wp-cli/wp-cli": "^2.1.0"
+        "wp-cli/wp-cli": "^2.12.0"
     }
 }
